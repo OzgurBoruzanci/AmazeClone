@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa311f8bf4d65f9488a6617702d28c9d, type: 3}
+  m_Name: GamePreferences
+  m_EditorClassIdentifier: 
+  PassiveTileColor: {r: 0.6603774, g: 0.44343263, b: 0.15263441, a: 0}
+  BorderCubeColor: {r: 0.3679245, g: 0.25615266, b: 0.13016197, a: 0}
+  TileColors:
+  - {r: 0, g: 0, b: 0, a: 0}
+  - {r: 1, g: 1, b: 1, a: 0}
+  - {r: 0.8584906, g: 0.125534, b: 0.125534, a: 0}
+  - {r: 1, g: 0.051886797, b: 0.49941579, a: 0}
+  - {r: 0.53288823, g: 0.20741367, b: 0.745283, a: 0}
+  - {r: 0.116136834, g: 0.11053756, b: 0.8679245, a: 0}
+  - {r: 0.15325737, g: 0.56136066, b: 0.7924528, a: 0}
+  - {r: 0.15690637, g: 0.8113208, b: 0.77897066, a: 0}
+  - {r: 0.25027606, g: 0.764151, b: 0.16220188, a: 0}
+  - {r: 0.8018868, g: 0.76267564, b: 0.17777678, a: 0}
