@@ -26,9 +26,9 @@ MonoBehaviour:
   - {fileID: 2800000, guid: 43189ae1d377cae4dbae919b7d6897ea, type: 3}
   - {fileID: 2800000, guid: 29c9b57733314dd42a5a730eb220767d, type: 3}
   counterLevelData:
-  - {fileID: 2800000, guid: 0f733a9cfd7b5c049b1e5def1833635b, type: 3}
-  - {fileID: 2800000, guid: 1ee3bf8985cbd3046b944eeffb824e9d, type: 3}
-  - {fileID: 2800000, guid: efca8b6ccf5fa6d428116a675a1fd7b9, type: 3}
+  - {fileID: 2800000, guid: e8e91be0a1681a845abfd8c175d0e43f, type: 3}
+  - {fileID: 2800000, guid: 18b702c5caa4b0d4a83e5e265e152a37, type: 3}
+  - {fileID: 2800000, guid: 1484bd9aae83e6247b4a8d72d1deefb9, type: 3}
   timerLevelData:
   - {fileID: 2800000, guid: ee6c1e3e815eea74689db99caa1bf46e, type: 3}
   - {fileID: 2800000, guid: a0fc032a0fb859d469a329fb2f609265, type: 3}

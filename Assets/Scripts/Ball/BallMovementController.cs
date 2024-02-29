@@ -10,6 +10,12 @@ public class BallMovementController : MonoBehaviour
     private Vector2 fingerUpPosition;
     private Rigidbody rb;
     private bool isSwipe = false;
+    private bool canMove = true; //false
+    public bool CanMove 
+    {
+        get => canMove;
+        set => canMove = value; 
+    }
 
     private void Start()
     {
@@ -22,8 +28,7 @@ public class BallMovementController : MonoBehaviour
     }
     private void Update()
     {
-        MouseController();
-        TouchedController();
+        if (canMove) { MouseController(); TouchedController(); }
     }
 
     private void MouseController()
@@ -106,13 +111,14 @@ public class BallMovementController : MonoBehaviour
             if (ballHit.collider != null)
             {
                 BallStop();
-                
+                ballController.Counter++;
             }
         }
         else
         {
             transform.Translate(direction * time * 50);
             ballController.PlayAnimation(swipeSide);
+            
             //transform.localScale = new Vector3(1, 1, 0.7f);
         }
     }

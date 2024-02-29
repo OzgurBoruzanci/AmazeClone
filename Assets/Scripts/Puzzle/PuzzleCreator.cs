@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
+using static UnityEngine.GraphicsBuffer;
 
 public class PuzzleCreator : MonoBehaviour
 {
@@ -10,8 +12,7 @@ public class PuzzleCreator : MonoBehaviour
     [SerializeField] private GameObject borderPrefab;
     [SerializeField] private List<TileController> puzzleCubes;
     [SerializeField] private List<Border> borderCubes;
-    [SerializeField] private Texture2D sprite;
-    [SerializeField] private GamePreferences gamePreferences;
+    private GamePreferences gamePreferences;
 
     private void OnEnable()
     {
@@ -43,7 +44,6 @@ public class PuzzleCreator : MonoBehaviour
     private void Start()
     {
         gamePreferences = EventManager.GetGamePreferencesScriptable();
-        CreateLevelPuzzle();
     }
 
     public void CreateLevelPuzzle()
@@ -60,6 +60,7 @@ public class PuzzleCreator : MonoBehaviour
 
         levelIndex = EventManager.GetLevelIndex().GetLevelIndex();
         var levelSprite = EventManager.GetLevelDataScriptable().GetLevelData()[levelIndex];
+        EventManager.LevelSprites(levelSprite); // burasý setative false ile hata alýyor.counterde
         var borderCubeColor = gamePreferences.BorderCubeColor;
         var width = levelSprite.width;
         var height = levelSprite.height;
@@ -83,7 +84,7 @@ public class PuzzleCreator : MonoBehaviour
                 {
                     var cube = Instantiate(borderPrefab, new Vector3((x * xScale) - ((width * xScale) / 2) + xScale / 2, xScale, (y * xScale) - ((width * xScale) / 2)), Quaternion.identity, borderParent).AddComponent<Border>();
 
-                    cube.transform.localScale = new Vector3(xScale, xScale*2, xScale);
+                    cube.transform.localScale = new Vector3(xScale, xScale, xScale);
                     cube.SetCube(borderCubeColor,tileColor);
                     borderCubes.Add(cube);
                 }
@@ -98,7 +99,6 @@ public class PuzzleCreator : MonoBehaviour
             }
 
         }
-        //EventManager.PuzzleCreated(borderCubes, width);
         EventManager.BallStartPos(puzzleCubes[0].transform.position);
     }
 
@@ -116,3 +116,19 @@ public class PuzzleCreator : MonoBehaviour
         //puzlecubes de silinebilir
     }
 }
+#if UNITY_EDITOR
+[CustomEditor(typeof(PuzzleCreator))]
+public class PlayerDataEditor : Editor
+{
+    public override void OnInspectorGUI()
+    {
+        DrawDefaultInspector();
+
+        PuzzleCreator playerData = (PuzzleCreator)target;
+        if (GUILayout.Button("Create Puzzle"))
+        {
+            playerData.CreateLevelPuzzle();
+        }
+    }
+}
+#endif
