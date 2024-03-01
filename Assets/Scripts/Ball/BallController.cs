@@ -31,10 +31,12 @@ public class BallController : MonoBehaviour
     private void OnEnable()
     {
         EventManager.BallStartPos += StartPos;
+        EventManager.GameOver += GameOver;
     }
     private void OnDisable()
     {
         EventManager.BallStartPos -= StartPos;
+        EventManager.GameOver -= GameOver;
     }
     private void Start()
     {
@@ -42,43 +44,16 @@ public class BallController : MonoBehaviour
         sequence = DOTween.Sequence();
         ballMovement = GetComponent<BallMovementController>();
     }
-    public void PlayGame()
-    {
-        ballMovement.CanMove = true;
-    }
     private void StartPos(Vector3 pos)
     {
+        ballMovement.CanMove=true;
         ballMovement.BallStop();
         pos = new Vector3(pos.x, pos.y + 1, pos.z);
         transform.position = pos;
     }
-    public void PlayAnimation(Direction direction)
+    private void GameOver()
     {
-        sequence.Complete();
-        Vector3 scale=transform.localScale;
-        Vector3 childScale= childFirstScale;
-        Vector3 childPos=transform.GetChild(0).localPosition;
-        if (direction == Direction.Left || direction == Direction.Right)
-        {
-            scale.z = 0.5f;
-            childScale.x = 3f;
-            childPos.x = (direction == Direction.Left) ? 1f : -1f;
-        }
-        else if (direction == Direction.Down || direction == Direction.Up)
-        {
-            scale.x = 0.5f;
-            childScale.z = 3f;
-            childPos.z = (direction == Direction.Down) ? 1f : -1f;
-        }
-        sequence.Append(transform.DOScale(scale, 0.2f));
-        sequence.Join(transform.GetChild(0).DOLocalMove(childPos, 0.2f));
-        sequence.Join(transform.GetChild(0).DOScale(childScale, 0.2f));
-    }
-    public void StopAnimation()
-    {
-        sequence.Complete();
-        sequence.Append(transform.DOScale(Vector3.one, 0.2f));
-        sequence.Join(transform.GetChild(0).DOLocalMove(Vector3.zero, 0.2f));
-        sequence.Join(transform.GetChild(0).DOScale(childFirstScale, 0.2f));
+        ballMovement.CanMove = false;
+        ballMovement.BallStop();
     }
 }

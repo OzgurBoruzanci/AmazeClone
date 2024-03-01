@@ -9,7 +9,6 @@ public class PuzzleCreator : MonoBehaviour
 {
     [SerializeField] private int levelIndex;
     [SerializeField] private GameObject tilePrefab;
-    [SerializeField] private GameObject borderPrefab;
     [SerializeField] private List<TileController> puzzleCubes;
     [SerializeField] private List<Border> borderCubes;
     private GamePreferences gamePreferences;
@@ -19,6 +18,7 @@ public class PuzzleCreator : MonoBehaviour
         EventManager.GetPuzzlePercentage += GetPuzzlePercentage;
         EventManager.CreateLevel += CreateLevelPuzzle;
         EventManager.PuzzleCubeFilled += RemoveLevelElements;
+        EventManager.GameOver += RemoveLevelElements;
     }
 
     private void OnDisable()
@@ -26,6 +26,7 @@ public class PuzzleCreator : MonoBehaviour
         EventManager.GetPuzzlePercentage -= GetPuzzlePercentage;
         EventManager.CreateLevel -= CreateLevelPuzzle;
         EventManager.PuzzleCubeFilled-= RemoveLevelElements;
+        EventManager.GameOver -= RemoveLevelElements;
     }
     private float GetPuzzlePercentage()
     {
@@ -60,7 +61,7 @@ public class PuzzleCreator : MonoBehaviour
 
         levelIndex = EventManager.GetLevelIndex().GetLevelIndex();
         var levelSprite = EventManager.GetLevelDataScriptable().GetLevelData()[levelIndex];
-        EventManager.LevelSprites(levelSprite); // burasý setative false ile hata alýyor.counterde
+        EventManager.LevelSprites(levelSprite);
         var borderCubeColor = gamePreferences.BorderCubeColor;
         var width = levelSprite.width;
         var height = levelSprite.height;
@@ -82,7 +83,7 @@ public class PuzzleCreator : MonoBehaviour
                 
                 if (color.a == 0)
                 {
-                    var cube = Instantiate(borderPrefab, new Vector3((x * xScale) - ((width * xScale) / 2) + xScale / 2, xScale, (y * xScale) - ((width * xScale) / 2)), Quaternion.identity, borderParent).AddComponent<Border>();
+                    var cube = Instantiate(tilePrefab, new Vector3((x * xScale) - ((width * xScale) / 2) + xScale / 2, xScale, (y * xScale) - ((width * xScale) / 2)), Quaternion.identity, borderParent).AddComponent<Border>();
 
                     cube.transform.localScale = new Vector3(xScale, xScale, xScale);
                     cube.SetCube(borderCubeColor,tileColor);
@@ -118,7 +119,7 @@ public class PuzzleCreator : MonoBehaviour
 }
 #if UNITY_EDITOR
 [CustomEditor(typeof(PuzzleCreator))]
-public class PlayerDataEditor : Editor
+public class PuzzleCreatorEditor : Editor
 {
     public override void OnInspectorGUI()
     {

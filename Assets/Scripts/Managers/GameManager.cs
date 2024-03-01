@@ -9,9 +9,8 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance => s_Instance;
     private static GameManager s_Instance;
 
-    [SerializeField] public GameType gameType;
-    public UnityEvent Start_Game;
-    public UnityEvent Game_Over;
+    [SerializeField] private new ParticleSystem particleSystem;
+    public GameType gameType;
     private void Awake()
     {
         if (s_Instance != null && s_Instance != this)
@@ -20,8 +19,6 @@ public class GameManager : MonoBehaviour
             return;
         }
         s_Instance = this;
-        Start_Game.AddListener(PlayGame);
-        Game_Over.AddListener(GameOver);
     }
     private void OnEnable()
     {
@@ -36,7 +33,6 @@ public class GameManager : MonoBehaviour
     {
         ChooseGameType();
         EventManager.CreateLevel();
-        Start_Game.Invoke();
     }
     public void ChooseGameType()
     {
@@ -48,13 +44,20 @@ public class GameManager : MonoBehaviour
     {
         float percentage = EventManager.GetPuzzlePercentage();
         if (percentage>=100)
-        {
-            EventManager.PuzzleCubeFilled();
-            EventManager.CreateLevel();
+        {            
+            particleSystem.Play();
+            Invoke("CreateLevelAfterDelay", 2f);
         }
+    }
+    private void CreateLevelAfterDelay()
+    {
+        Debug.Log("a");
+        particleSystem.Stop();
+        EventManager.PuzzleCubeFilled();
+        EventManager.CreateLevel();
     }
     public void GameOver()
     {
-        Game_Over.Invoke();
+        EventManager.GameOver();
     }
 }

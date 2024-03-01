@@ -2,24 +2,26 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEngine.GraphicsBuffer;
 
 public class UIManager : MonoBehaviour
 {
     [SerializeField] private GameObject MenuPanel;
     [SerializeField] private GameObject GamePanel;
     [SerializeField] private GameObject PausePanel;
-    [SerializeField] private GameObject TimerPanel;
-    [SerializeField] private GameObject CounterPanel;
     [SerializeField] private GameObject timerText;
     [SerializeField] private GameObject counterText;
 
     [SerializeField] private Button normalButton;
     [SerializeField] private Button timerButton;
     [SerializeField] private Button counterButton;
+    private GamePanelController gamePanelController;
     private void Start()
     {
+        gamePanelController = GetComponent<GamePanelController>();
         ShowSelectedMode(EventManager.GetGameModeScriptable().GetGameMode());
     }
     public void PlayGameBtn()
@@ -91,10 +93,12 @@ public class UIManager : MonoBehaviour
                 break;
             case GameType.Timer:
                 timerText.SetActive(true);
+                gamePanelController.BeginTimer();
                 counterText.SetActive(false);
                 break;
             case GameType.Counter:
                 counterText.SetActive(true);
+                gamePanelController.IsCounter = true;
                 timerText.SetActive(false);
                 break;
         }

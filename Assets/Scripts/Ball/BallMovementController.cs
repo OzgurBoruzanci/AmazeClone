@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class BallMovementController : MonoBehaviour
 {
@@ -10,13 +11,12 @@ public class BallMovementController : MonoBehaviour
     private Vector2 fingerUpPosition;
     private Rigidbody rb;
     private bool isSwipe = false;
-    private bool canMove = true; //false
-    public bool CanMove 
+    private bool canMove = false; //false
+    public bool CanMove
     {
         get => canMove;
-        set => canMove = value; 
+        set => canMove = value;
     }
-
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -24,11 +24,7 @@ public class BallMovementController : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        BallMoveController();
-    }
-    private void Update()
-    {
-        if (canMove) { MouseController(); TouchedController(); }
+        if (canMove) { MouseController(); TouchedController(); BallMoveController(); }
     }
 
     private void MouseController()
@@ -117,15 +113,11 @@ public class BallMovementController : MonoBehaviour
         else
         {
             transform.Translate(direction * time * 50);
-            ballController.PlayAnimation(swipeSide);
-            
-            //transform.localScale = new Vector3(1, 1, 0.7f);
         }
     }
 
     public void BallStop()
     {
-        ballController.StopAnimation();
         swipeSide = Direction.None;
         rb.velocity = new Vector3(0, 0, 0);
         this.transform.Translate(new Vector3(0, 0, 0));

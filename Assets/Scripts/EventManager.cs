@@ -18,4 +18,5 @@ public static class EventManager
     public static Func<float> GetPuzzlePercentage;
     public static Action CheckPuzzlePercentage;
     public static Action PuzzleCubeFilled;
+    public static Action GameOver;
 }
