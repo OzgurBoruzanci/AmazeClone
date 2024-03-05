@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,16 +8,12 @@ public class BallMovementController : MonoBehaviour
 {
     private BallController ballController;
     private Direction swipeSide;
+    private Rigidbody rb;
     private Vector2 fingerDownPosition;
     private Vector2 fingerUpPosition;
-    private Rigidbody rb;
     private bool isSwipe = false;
-    private bool canMove = false; //false
-    public bool CanMove
-    {
-        get => canMove;
-        set => canMove = value;
-    }
+    private bool canMove = false;
+    public bool CanMove { get => canMove; set => canMove = value; }
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -24,21 +21,25 @@ public class BallMovementController : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        if (canMove) { MouseController(); TouchedController(); BallMoveController(); }
+        if (canMove) { MouseController(); TouchedController(); }
     }
 
     private void MouseController()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(1)) //0
         {
             fingerUpPosition = Input.mousePosition;
             fingerDownPosition = Input.mousePosition;
+            isSwipe = true;
         }
 
-        if (Input.GetMouseButtonUp(0))
+        if (Input.GetMouseButtonUp(1) && isSwipe)
         {
+            isSwipe = false;
             fingerDownPosition = Input.mousePosition;
+            ballController.IncreaseCounter();
             SwipeDirectionCheck();
+            BallMoveController();
         }
     }
     private void TouchedController()
@@ -57,7 +58,10 @@ public class BallMovementController : MonoBehaviour
             if (touch.phase == TouchPhase.Ended && isSwipe)
             {
                 fingerDownPosition = touch.position;
+                ballController.IncreaseCounter();
                 SwipeDirectionCheck();
+                BallMoveController();
+                isSwipe = false;
             }
         }
     }
@@ -93,34 +97,39 @@ public class BallMovementController : MonoBehaviour
     {
         if (swipeSide != Direction.None)
         {
-            BallMove(SetVectorOfSwipeDirection(), Time.deltaTime);
-            EventManager.CheckPuzzlePercentage();
+            BallMove(SetVectorOfSwipeDirection());
         }
     }
-    private void BallMove(Vector3 direction, float time)
+    private void BallMove(Vector3 direction)
     {
-        Ray ballRay = new Ray(transform.position, direction/4);
+        Ray ballRay = new Ray(transform.position, direction);
         RaycastHit ballHit;
         Debug.DrawRay(transform.position, direction, Color.red);
-        if (Physics.Raycast(ballRay, out ballHit, 1))
+        if (Physics.Raycast(ballRay, out ballHit))
         {
-            if (ballHit.collider != null)
+            if (ballHit.collider.GetComponent<Border>())
             {
+                Vector3 pos = ballHit.transform.position - direction;
+                ballController.PlayAnimation(swipeSide);
+                var time = TimeCalculation(pos);
+                transform.DOMove(pos, time).SetEase(Ease.Linear).OnComplete(() =>
+                {
+                    ballController.StopAnimation();
+                });
                 BallStop();
-                ballController.Counter++;
             }
         }
-        else
-        {
-            transform.Translate(direction * time * 50);
-        }
     }
-
+    private float TimeCalculation(Vector3 pos)
+    {
+        float difference = Vector3.Distance(transform.position, pos);
+        float time = difference / 25;
+        return time;
+    }
     public void BallStop()
     {
         swipeSide = Direction.None;
         rb.velocity = new Vector3(0, 0, 0);
-        this.transform.Translate(new Vector3(0, 0, 0));
         rb.constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionY;
     }
 }

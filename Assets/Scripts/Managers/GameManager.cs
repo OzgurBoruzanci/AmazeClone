@@ -1,8 +1,5 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
-using UnityEngine.Events;
 
 public class GameManager : MonoBehaviour
 {
@@ -11,6 +8,8 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private new ParticleSystem particleSystem;
     public GameType gameType;
+    private float delay;
+    public float Delay { get=>delay; set=>delay=value; }
     private void Awake()
     {
         if (s_Instance != null && s_Instance != this)
@@ -22,38 +21,36 @@ public class GameManager : MonoBehaviour
     }
     private void OnEnable()
     {
-        ChooseGameType();
         EventManager.CheckPuzzlePercentage += CheckPuzzlePercentage;
+        EventManager.LevelSuccessful += LevelSuccessful;
     }
     private void OnDisable()
     {
         EventManager.CheckPuzzlePercentage -= CheckPuzzlePercentage;
+        EventManager.LevelSuccessful -= LevelSuccessful;
     }
     public void PlayGame()
     {
-        ChooseGameType();
-        EventManager.CreateLevel();
-    }
-    public void ChooseGameType()
-    {
-        gameType = EventManager.GetGameModeScriptable().GetGameMode();
-        EventManager.GetLevelIndex().GameType = gameType;
-        EventManager.GetLevelDataScriptable().GameType = gameType;
+        EventManager.PlayGame();
     }
     private void CheckPuzzlePercentage()
     {
         float percentage = EventManager.GetPuzzlePercentage();
         if (percentage>=100)
-        {            
-            particleSystem.Play();
-            Invoke("CreateLevelAfterDelay", 2f);
+        {
+            EventManager.PuzzleCubeFilled();
+            BallController.Instance.gameObject.GetComponent<TrailRenderer>().enabled = false;
+            Sequence sequence = DOTween.Sequence();
+            sequence.AppendInterval(delay);
+            sequence.AppendCallback(LevelCompleted);
         }
     }
-    private void CreateLevelAfterDelay()
+    private void LevelSuccessful()
     {
-        Debug.Log("a");
-        particleSystem.Stop();
-        EventManager.PuzzleCubeFilled();
+        particleSystem.Play();
+    }
+    private void LevelCompleted()
+    {
         EventManager.CreateLevel();
     }
     public void GameOver()

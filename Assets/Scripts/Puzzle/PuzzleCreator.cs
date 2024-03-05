@@ -12,12 +12,11 @@ public class PuzzleCreator : MonoBehaviour
     [SerializeField] private List<TileController> puzzleCubes;
     [SerializeField] private List<Border> borderCubes;
     private GamePreferences gamePreferences;
-
     private void OnEnable()
     {
         EventManager.GetPuzzlePercentage += GetPuzzlePercentage;
         EventManager.CreateLevel += CreateLevelPuzzle;
-        EventManager.PuzzleCubeFilled += RemoveLevelElements;
+        EventManager.PlayGame += CreateLevelPuzzle;
         EventManager.GameOver += RemoveLevelElements;
     }
 
@@ -25,14 +24,13 @@ public class PuzzleCreator : MonoBehaviour
     {
         EventManager.GetPuzzlePercentage -= GetPuzzlePercentage;
         EventManager.CreateLevel -= CreateLevelPuzzle;
-        EventManager.PuzzleCubeFilled-= RemoveLevelElements;
+        EventManager.PlayGame -= CreateLevelPuzzle;
         EventManager.GameOver -= RemoveLevelElements;
     }
     private float GetPuzzlePercentage()
     {
         var puzzleCubeAmount = puzzleCubes.Count;
         var filledAmount = 0;
-
         foreach (var cube in puzzleCubes)
         {
             if (cube.state == TileCubeStates.Filled) filledAmount++;
@@ -41,14 +39,13 @@ public class PuzzleCreator : MonoBehaviour
         return percentage;
 
     }
-
     private void Start()
     {
         gamePreferences = EventManager.GetGamePreferencesScriptable();
     }
-
     public void CreateLevelPuzzle()
     {
+        RemoveLevelElements();
         var tilePassiveColor = gamePreferences.PassiveTileColor;
         var tileColorsCount = gamePreferences.TileColors.Count - 1;
         var tileColor = gamePreferences.TileColors[((int)Random.Range(0, tileColorsCount))];
@@ -56,11 +53,9 @@ public class PuzzleCreator : MonoBehaviour
         {
             DestroyImmediate(item);
         }
-
         puzzleCubes.Clear();
 
-        levelIndex = EventManager.GetLevelIndex().GetLevelIndex();
-        var levelSprite = EventManager.GetLevelDataScriptable().GetLevelData()[levelIndex];
+        var levelSprite = EventManager.GetGameModeDataScriptable().GetLevelData();
         EventManager.LevelSprites(levelSprite);
         var borderCubeColor = gamePreferences.BorderCubeColor;
         var width = levelSprite.width;
@@ -83,8 +78,7 @@ public class PuzzleCreator : MonoBehaviour
                 
                 if (color.a == 0)
                 {
-                    var cube = Instantiate(tilePrefab, new Vector3((x * xScale) - ((width * xScale) / 2) + xScale / 2, xScale, (y * xScale) - ((width * xScale) / 2)), Quaternion.identity, borderParent).AddComponent<Border>();
-
+                    var cube = Instantiate(tilePrefab, new Vector3((x * xScale) - ((width * xScale) / 2) + xScale / 2, xScale-0.1f, (y * xScale) - ((width * xScale) / 2)), Quaternion.identity, borderParent).AddComponent<Border>();
                     cube.transform.localScale = new Vector3(xScale, xScale, xScale);
                     cube.SetCube(borderCubeColor,tileColor);
                     borderCubes.Add(cube);
@@ -92,15 +86,14 @@ public class PuzzleCreator : MonoBehaviour
                 else
                 {
                     var cube = Instantiate(tilePrefab, new Vector3((x * xScale) - ((width * xScale) / 2) + xScale / 2, 0, (y * xScale) - ((width * xScale) / 2)), Quaternion.identity, puzzleParent).AddComponent<TileController>();
-                    cube.transform.localScale = new Vector3(xScale, xScale, xScale);
-                    
+                    cube.transform.localScale = new Vector3(xScale, xScale, xScale);                    
                     cube.SetCube(tilePassiveColor,tileColor);
                     puzzleCubes.Add(cube);
                 }
             }
-
         }
         EventManager.BallStartPos(puzzleCubes[0].transform.position);
+        EventManager.PuzzleCreated();
     }
 
     private void RemoveLevelElements()
@@ -114,7 +107,6 @@ public class PuzzleCreator : MonoBehaviour
             Destroy(border.gameObject);
         }
         borderCubes.Clear();
-        //puzlecubes de silinebilir
     }
 }
 #if UNITY_EDITOR

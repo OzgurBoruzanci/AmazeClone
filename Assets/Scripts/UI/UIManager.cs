@@ -14,11 +14,21 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject PausePanel;
     [SerializeField] private GameObject timerText;
     [SerializeField] private GameObject counterText;
+    [SerializeField] private GameObject failPanel;
 
     [SerializeField] private Button normalButton;
     [SerializeField] private Button timerButton;
     [SerializeField] private Button counterButton;
     private GamePanelController gamePanelController;
+
+    private void OnEnable()
+    {
+        EventManager.FailGame += FailGame;
+    }
+    private void OnDisable()
+    {
+        EventManager.FailGame -= FailGame;
+    }
     private void Start()
     {
         gamePanelController = GetComponent<GamePanelController>();
@@ -26,26 +36,41 @@ public class UIManager : MonoBehaviour
     }
     public void PlayGameBtn()
     {
+        Time.timeScale = 1;
         MenuPanel.SetActive(false);
         ActivateGamePanel(EventManager.GetGameModeScriptable().GetGameMode());
         GameManager.Instance.PlayGame();
     }
     public void PauseGameBtn()
     {
+        Time.timeScale = 0;
         GamePanel.SetActive(false);
         PausePanel.SetActive(true);
-        Time.timeScale = 0;
     }
     public void CointuneGameBtn()
     {
+        Time.timeScale = 1;
         GamePanel.SetActive(true);
         PausePanel.SetActive(false);
+    }
+    private void FailGame()
+    {
+        failPanel.SetActive(true);
+        GamePanel.SetActive(false);
+    }
+    public void TryBtn()
+    {
         Time.timeScale = 1;
+        failPanel.SetActive(false);
+        ActivateGamePanel(EventManager.GetGameModeScriptable().GetGameMode());
+        GameManager.Instance.PlayGame();
     }
     public void MainMenuBtn()
     {
+        failPanel.SetActive(false);
         MenuPanel.SetActive(true);
         PausePanel.SetActive(false);
+        GamePanel.SetActive(false);
         GameManager.Instance.GameOver();
     }
     public void NormalBtn()
@@ -89,10 +114,12 @@ public class UIManager : MonoBehaviour
         {
             case GameType.Normal:
                 timerText.SetActive(false);
+                gamePanelController.IsCounter = false;
                 counterText.SetActive(false);
                 break;
             case GameType.Timer:
                 timerText.SetActive(true);
+                gamePanelController.IsCounter = false;
                 gamePanelController.BeginTimer();
                 counterText.SetActive(false);
                 break;

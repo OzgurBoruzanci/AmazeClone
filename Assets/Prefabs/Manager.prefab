@@ -1,0 +1,81 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3852120539118899140
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5774035428950883668}
+  - component: {fileID: 8759824753634726890}
+  - component: {fileID: 8367095329332051605}
+  - component: {fileID: 8861572572232954107}
+  m_Layer: 0
+  m_Name: Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5774035428950883668
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3852120539118899140}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8759824753634726890
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3852120539118899140}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99b81027836054e4ea57d320ca47240c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  particleSystem: {fileID: 0}
+  gameType: 2
+--- !u!114 &8367095329332051605
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3852120539118899140}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0d2bb15a5b779f40a853e5b5f40b76f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gamePreferences: {fileID: 11400000, guid: 202cbf782aef9f445b2da84cea3aca20, type: 2}
+  normalMode: {fileID: 11400000, guid: bb887ee8344c3124db97886ffd7c6bcb, type: 2}
+  timerMode: {fileID: 11400000, guid: 8319b92adf7e72c409d6c243ae7ba3d9, type: 2}
+  counterMode: {fileID: 11400000, guid: dec884e0b3fe2ac4f81fb5591471479f, type: 2}
+  gameMode: {fileID: 11400000, guid: 018dd40c86358ca49b0e3f7057f2a7e5, type: 2}
+--- !u!114 &8861572572232954107
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3852120539118899140}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf11bd7c73b37594ab0d64e6f2d26796, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  timerListSize: 0
+  levelGained: 0

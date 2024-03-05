@@ -15,18 +15,18 @@ public class TileController : Cube
             FillCube();
         }
     }
-    public override void SetCube(UnityEngine.Color newColor, Color activeColor)
+    public override void SetCube(Color newColor, Color activeColor)
     {
         base.SetCube(newColor,activeColor);
-        //rend.material.color = black;
-        gameObject.layer = 6;
     }
 
     public void FillCube()
     {
-        var firstScale = transform.localScale;
-        //transform.localScale = Vector3.zero;
-        rend.material.color = color;
-        state = TileCubeStates.Filled;
+        if (state== TileCubeStates.Empty)
+        {
+            rend.material.color = color;
+            state = TileCubeStates.Filled;
+            EventManager.CheckPuzzlePercentage();
+        }
     }
 }

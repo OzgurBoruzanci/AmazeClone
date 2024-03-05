@@ -11,8 +11,7 @@ public class BallController : MonoBehaviour
     private static BallController s_Instance;
     private BallMovementController ballMovement;
     private Sequence sequence;
-    private Vector3 childFirstScale;
-    private int counter = 0;
+    public int counter;
     public int Counter
     {
         get => counter;
@@ -30,30 +29,55 @@ public class BallController : MonoBehaviour
     }
     private void OnEnable()
     {
-        EventManager.BallStartPos += StartPos;
+        EventManager.BallStartPos += StartGame;
         EventManager.GameOver += GameOver;
     }
     private void OnDisable()
     {
-        EventManager.BallStartPos -= StartPos;
+        EventManager.BallStartPos -= StartGame;
         EventManager.GameOver -= GameOver;
     }
     private void Start()
     {
-        childFirstScale = transform.GetChild(0).lossyScale;
         sequence = DOTween.Sequence();
         ballMovement = GetComponent<BallMovementController>();
     }
-    private void StartPos(Vector3 pos)
+    private void StartGame(Vector3 pos)
     {
+        counter = 0;
         ballMovement.CanMove=true;
-        ballMovement.BallStop();
-        pos = new Vector3(pos.x, pos.y + 1, pos.z);
+        pos = new Vector3(pos.x, pos.y + 0.9f, pos.z);
         transform.position = pos;
+        transform.GetComponent<TrailRenderer>().enabled = true;
+    }
+    public void PlayAnimation(Direction direction)
+    {
+        sequence.Complete();
+        Vector3 scale = transform.localScale;
+        if (direction == Direction.Left || direction == Direction.Right)
+        {
+            scale.z = 0.5f;
+        }
+        else if (direction == Direction.Down || direction == Direction.Up)
+        {
+            scale.x = 0.5f;
+        }
+        sequence.Append(transform.DOScale(scale, 0.2f));
+    }
+    public void StopAnimation()
+    {
+        sequence.Complete();
+        sequence.Append(transform.DOScale(Vector3.one, 0.2f));
+    }
+    public void IncreaseCounter()
+    {
+        counter++;
+        EventManager.UpdateCounterText();
     }
     private void GameOver()
     {
         ballMovement.CanMove = false;
-        ballMovement.BallStop();
+        transform.GetComponent<TrailRenderer>().enabled = false;
+        transform.position = new Vector3(-100, 0, 0);
     }
 }

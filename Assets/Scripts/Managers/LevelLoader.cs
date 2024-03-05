@@ -1,33 +1,55 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class LevelLoader : MonoBehaviour
 {
-    [SerializeField] private LevelIndex levelIndex;
+    private GameModeData modeData;
+    private GameMode gameMode;
+    private GameType gameType;
+    private int timerListSize;
+    private int levelGained;
     private void OnEnable()
     {
         EventManager.PuzzleCubeFilled += PuzzleCubeFilled;
+        EventManager.PlayGame += LoadLevel;
     }
     private void OnDisable()
     {
         EventManager.PuzzleCubeFilled -= PuzzleCubeFilled;
-    }
-    private void Start()
-    {
-        LoadLevel();
+        EventManager.PlayGame-= LoadLevel;
     }
     public void LoadLevel()
     {
-        SaveManager.LoadGameData(levelIndex);
-
-        //SceneManager.LoadScene(1);
+        modeData=EventManager.GetGameModeDataScriptable();
+        gameMode = EventManager.GetGameModeScriptable();
+        gameType = gameMode.GetGameMode();
+        timerListSize = modeData.GetLevelDataList().Count-1;
+        SaveManager.LoadGameData(modeData);
     }
     private void PuzzleCubeFilled()
     {
-        levelIndex.IncreaseLevel();
-        SaveManager.SaveGameData(levelIndex);
+        var levelSize = timerListSize - levelGained;
+        Debug.Log(levelSize);
+        if (gameType==GameType.Timer)
+        {
+            if (levelSize > 0)
+            {
+                levelGained++;
+                GameManager.Instance.Delay = 0.1f;
+            }
+            else if (levelSize <= 0)
+            {
+                EventManager.LevelSuccessful();
+                GameManager.Instance.Delay = 2f;
+                levelGained = 0;
+            }
+        }
+        else
+        {
+            EventManager.LevelSuccessful();
+            GameManager.Instance.Delay = 2f;
+        }
+        modeData.IncreaseLevel();
+        SaveManager.SaveGameData(modeData);
         LoadLevel();
     }
 }

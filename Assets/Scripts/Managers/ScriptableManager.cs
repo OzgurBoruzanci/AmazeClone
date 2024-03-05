@@ -4,21 +4,30 @@ using UnityEngine;
 
 public class ScriptableManager : MonoBehaviour
 {
-    [SerializeField] private LevelData levelData;
     [SerializeField] private GamePreferences gamePreferences;
-    [SerializeField] private LevelIndex levelIndex;
+    [SerializeField] private GameModeData normalMode;
+    [SerializeField] private GameModeData timerMode;
+    [SerializeField] private GameModeData counterMode;
     [SerializeField] private GameMode gameMode;
     void OnEnable()
     {
-        EventManager.GetLevelDataScriptable += GetLevelDataScriptable;
         EventManager.GetGamePreferencesScriptable += GetGamePreferencesScriptable;
-        EventManager.GetLevelIndex += GetLevelIndex;
         EventManager.GetGameModeScriptable += GetGameMode;
+        EventManager.GetGameModeDataScriptable += GetGameModeData;
     }
-
-    private LevelIndex GetLevelIndex()
+    private GameModeData GetGameModeData()
     {
-        return levelIndex;
+        switch(gameMode.GetGameMode())
+        {
+            case GameType.Normal:
+                return normalMode;
+            case GameType.Timer:
+                return timerMode;
+            case GameType.Counter:
+                return counterMode;
+            default:
+                return normalMode;
+        }
     }
 
     private GamePreferences GetGamePreferencesScriptable()
@@ -28,17 +37,12 @@ public class ScriptableManager : MonoBehaviour
 
     void OnDisable()
     {
-        EventManager.GetLevelDataScriptable -= GetLevelDataScriptable;
         EventManager.GetGamePreferencesScriptable -= GetGamePreferencesScriptable;
-        EventManager.GetLevelIndex -= GetLevelIndex;
         EventManager.GetGameModeScriptable -= GetGameMode;
+        EventManager.GetGameModeDataScriptable -= GetGameModeData;
     }
     private GameMode GetGameMode()
     {
         return gameMode;
-    }
-    private LevelData GetLevelDataScriptable()
-    {
-        return levelData;
     }
 }

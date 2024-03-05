@@ -15,22 +15,22 @@ public class GamePanelController : MonoBehaviour
     private void OnEnable()
     {
         EventManager.LevelSprites += LevelSprites;
+        EventManager.PuzzleCreated += BeginCounter;
+        EventManager.UpdateCounterText += BeginCounter;
     }
     private void OnDisable()
     {
         EventManager.LevelSprites -= LevelSprites;
+        EventManager.PuzzleCreated -= BeginCounter;
+        EventManager.UpdateCounterText-=BeginCounter;
     }
     private void LevelSprites(Texture2D sprites)
     {
         levelSprites = sprites;
     }
-
-    void Update()
-    {
-        BeginCounter();
-    }
     public void BeginTimer()
     {
+        timerDuration = 50;
         StartCoroutine(LevelDurationCoroutine());
     }
     private IEnumerator LevelDurationCoroutine()
@@ -46,16 +46,13 @@ public class GamePanelController : MonoBehaviour
             timerDuration -= 1f;
         }
         GameManager.Instance.GameOver();
+        EventManager.FailGame();
     }
     private void BeginCounter()
     {
         if (isCounter)
         {
-            levelCounter = int.Parse(levelSprites.name); //düzenlenmesi lazým ****
-            if (levelCounter != 0)
-            {
-                CheckCounterLimit();
-            }
+            CheckCounterLimit();
         }
     }
     private void CheckCounterLimit()
@@ -63,10 +60,14 @@ public class GamePanelController : MonoBehaviour
         levelCounter = int.Parse(levelSprites.name);
         int ballCounter = BallController.Instance.Counter;
         int text = levelCounter - ballCounter;
-        counterText.text = text.ToString();
+        if (text>=0)
+        {
+            counterText.text = text.ToString();
+        }
         if (ballCounter > levelCounter)
         {
             GameManager.Instance.GameOver();
+            EventManager.FailGame();
         }
     }
 }
