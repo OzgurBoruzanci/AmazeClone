@@ -92,7 +92,9 @@ public class PuzzleCreator : MonoBehaviour
                 }
             }
         }
-        EventManager.BallStartPos(puzzleCubes[0].transform.position);
+        EventManager.SetCamPos(levelSprite.width);
+        var ballPos = puzzleCubes[0].transform.position;
+        EventManager.BallStartPos(ballPos);
         EventManager.PuzzleCreated();
     }
 

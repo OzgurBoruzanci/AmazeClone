@@ -30,7 +30,7 @@ public class GamePanelController : MonoBehaviour
     }
     public void BeginTimer()
     {
-        timerDuration = 50;
+        timerDuration = 40;
         StartCoroutine(LevelDurationCoroutine());
     }
     private IEnumerator LevelDurationCoroutine()
@@ -41,7 +41,7 @@ public class GamePanelController : MonoBehaviour
             int seconds = Mathf.FloorToInt(timerDuration % 60f);
 
             timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSecondsRealtime(1f);
 
             timerDuration -= 1f;
         }

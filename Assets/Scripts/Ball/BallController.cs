@@ -44,6 +44,7 @@ public class BallController : MonoBehaviour
     }
     private void StartGame(Vector3 pos)
     {
+        transform.GetComponent<TrailRenderer>().enabled = false;
         counter = 0;
         ballMovement.CanMove=true;
         pos = new Vector3(pos.x, pos.y + 0.9f, pos.z);
@@ -77,6 +78,7 @@ public class BallController : MonoBehaviour
     private void GameOver()
     {
         ballMovement.CanMove = false;
+        ballMovement.BallStop();
         transform.GetComponent<TrailRenderer>().enabled = false;
         transform.position = new Vector3(-100, 0, 0);
     }

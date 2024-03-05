@@ -26,14 +26,14 @@ public class BallMovementController : MonoBehaviour
 
     private void MouseController()
     {
-        if (Input.GetMouseButtonDown(1)) //0
+        if (Input.GetMouseButtonDown(0))
         {
             fingerUpPosition = Input.mousePosition;
             fingerDownPosition = Input.mousePosition;
             isSwipe = true;
         }
 
-        if (Input.GetMouseButtonUp(1) && isSwipe)
+        if (Input.GetMouseButtonUp(0) && isSwipe)
         {
             isSwipe = false;
             fingerDownPosition = Input.mousePosition;

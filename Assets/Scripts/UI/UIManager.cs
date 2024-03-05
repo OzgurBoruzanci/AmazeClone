@@ -55,6 +55,7 @@ public class UIManager : MonoBehaviour
     }
     private void FailGame()
     {
+        Time.timeScale = 0;
         failPanel.SetActive(true);
         GamePanel.SetActive(false);
     }
@@ -67,11 +68,12 @@ public class UIManager : MonoBehaviour
     }
     public void MainMenuBtn()
     {
+        GameManager.Instance.GameOver();
+        Time.timeScale = 0;
         failPanel.SetActive(false);
         MenuPanel.SetActive(true);
         PausePanel.SetActive(false);
         GamePanel.SetActive(false);
-        GameManager.Instance.GameOver();
     }
     public void NormalBtn()
     {
